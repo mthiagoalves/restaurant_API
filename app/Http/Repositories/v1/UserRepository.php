@@ -17,9 +17,18 @@ class UserRepository
         return UserResource::collection(User::all());
     }
 
-    public static function getOneUsers($id)
+    public static function getOneUsers($userId)
     {
-        return new UserResource(User::where('id', $id)->first());
+        self::verifyUserExistent($userId);
+
+        $user = User::where('id', $userId)->first();
+
+        if ($user == null) {
+            $userTrashed = User::onlyTrashed()->find($userId);
+            return HttpResponses::success('User was deleted', 200, new UserResource($userTrashed));
+        }
+
+        return new UserResource($user);
     }
 
     public static function storeUser($dataUser)
@@ -37,11 +46,7 @@ class UserRepository
             return HttpResponses::error('Data Invalid', 422, $validator->errors());
         }
 
-        if (User::where('username', $validator->validated()["username"])->exists()) {
-            return HttpResponses::error('Username already exist, please insert another.', 422);
-        } else if (User::where('email', $validator->validated()["email"])->exists()) {
-            return HttpResponses::error('Email already registred, please insert another.', 422);
-        }
+        self::validateUniqueFields($validator->validated()["username"], $validator->validated()["email"]);
 
         $created = User::create($validator->validated());
 
@@ -54,7 +59,6 @@ class UserRepository
 
     public static function updateUser($dataUser, $userId)
     {
-
         $validator = Validator::make($dataUser, [
             "name" => "string|max:150|required",
             "username" => "string|max:150|required",
@@ -68,27 +72,56 @@ class UserRepository
             return HttpResponses::error('Data Invalid', 422, $validator->errors());
         }
 
-        if (User::where('id', '!=', $userId)->get() && User::where('username', $validator->validated()["username"])->exists()) {
-            return HttpResponses::error('Username already exist, please insert another.', 500);
-        } else if (User::where('email', $validator->validated()["email"])->exists() && User::where('id', '!=', $userId)->exists()) {
-            return HttpResponses::error('Email already registred, please insert another.', 500);
-        }
+        self::verifyUserExistent($userId);
 
-        $updated = User::where('id', $userId)->update([
+        self::validateUniqueFields($validator->validated()["username"], $validator->validated()["email"]);
+
+        $userAtUpdated = User::findOrFail($userId);
+
+        $userAtUpdated->update([
             "name" => $validator->validated()["name"],
             "username" => $validator->validated()["username"],
             "email" => $validator->validated()["email"],
             "password" => $validator->validated()["password"]
         ]);
 
-        if ($updated) {
-            return HttpResponses::success('User has been updated', 200, new UserResource($updated));
+        if ($userAtUpdated) {
+            return HttpResponses::success('User has been updated', 200, new UserResource($userAtUpdated));
         }
 
         return HttpResponses::error('Something wrong to update user', 422);
     }
 
-    private static function validatedNewEmail()
+    public static function sendToTrash($userId)
     {
+
+        self::verifyUserExistent($userId);
+
+        $userAtDeleted = User::find($userId);
+
+        $userAtDeleted->delete();
+
+        if ($userAtDeleted) {
+            return HttpResponses::success('User has been deleted', 200, new UserResource($userAtDeleted));
+        }
+        return HttpResponses::error('Something wrong to delete user', 422);
+    }
+
+    private static function verifyUserExistent($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return HttpResponses::error('User not found', 404);
+        }
+    }
+
+    private static function validateUniqueFields($username, $email)
+    {
+        if (User::where('username', $username)->exists()) {
+            return HttpResponses::error('Username already exist, please insert another.', 422);
+        } else if (User::where('email', $email)->exists()) {
+            return HttpResponses::error('Email already registred, please insert another.', 422);
+        }
     }
 }

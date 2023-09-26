@@ -10,7 +10,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::post('/users/store', [UserController::class, 'store']);
-    Route::put('/users/update-{id}', [UserController::class, 'update']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}',  [UserController::class, 'sendToTrash']);
 
     Route::get('/order', [OrderController::class, 'index']);
     Route::get('/order/{id}', [OrderController::class, 'show']);
