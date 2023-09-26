@@ -6,7 +6,7 @@ use App\Http\Resources\v1\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\HttpResponses;
-
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository
 {
@@ -46,9 +46,13 @@ class UserRepository
             return HttpResponses::error('Data Invalid', 422, $validator->errors());
         }
 
-        self::validateUniqueFields($validator->validated()["username"], $validator->validated()["email"]);
+        $userData = $validator->validated();
 
-        $created = User::create($validator->validated());
+        self::validateUniqueFields($userData["username"], $userData["email"]);
+
+        $userData['password'] = self::passwordToHash($userData['password']);
+
+        $created = User::create($userData);
 
         if ($created) {
             return HttpResponses::success('User created successfully', 200, new UserResource($created));
@@ -82,7 +86,7 @@ class UserRepository
             "name" => $validator->validated()["name"],
             "username" => $validator->validated()["username"],
             "email" => $validator->validated()["email"],
-            "password" => $validator->validated()["password"]
+            "password" => self::passwordToHash($validator->validated()['password'])
         ]);
 
         if ($userAtUpdated) {
@@ -123,5 +127,10 @@ class UserRepository
         } else if (User::where('email', $email)->exists()) {
             return HttpResponses::error('Email already registred, please insert another.', 422);
         }
+    }
+
+    private static function passwordToHash($userPassword)
+    {
+        return Hash::make($userPassword);
     }
 }
