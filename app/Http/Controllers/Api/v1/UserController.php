@@ -31,9 +31,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $userId)
     {
-        return UserRepository::getOneUsers($id);
+        return UserRepository::getOneUsers($userId);
     }
 
     /**
@@ -49,8 +49,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function sendToTrash(string $userId)
     {
-        //
+        return UserRepository::sendToTrash($userId);
     }
 }
