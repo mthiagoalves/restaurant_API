@@ -53,4 +53,11 @@ class UserController extends Controller
     {
         return UserRepository::sendToTrash($userId);
     }
+
+     /**
+     * Remove the specified resource to DB.
+     */
+    public function destroy(string $userId){
+        return UserRepository::destroyUser($userId);
+    }
 }

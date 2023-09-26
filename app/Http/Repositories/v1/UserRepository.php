@@ -111,6 +111,20 @@ class UserRepository
         return HttpResponses::error('Something wrong to delete user', 422);
     }
 
+    public static function destroyUser($userId)
+    {
+        self::verifyUserExistent($userId);
+
+        $userAtDeleted = User::find($userId);
+
+        $userAtDeleted->forceDelete();
+
+        if ($userAtDeleted) {
+            return HttpResponses::success('User has been deleted', 200, new UserResource($userAtDeleted));
+        }
+        return HttpResponses::error('Something wrong to delete user', 422);
+    }
+
     private static function verifyUserExistent($userId)
     {
         $user = User::find($userId);
