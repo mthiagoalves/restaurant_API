@@ -46,13 +46,13 @@ class UserRepository
             return HttpResponses::error('Data Invalid', 422, $validator->errors());
         }
 
-        $userData = $validator->validated();
+        $userValidated = $validator->validated();
 
-        self::validateUniqueFields($userData["username"], $userData["email"]);
+        self::validateUniqueFields($userValidated["username"], $userValidated["email"]);
 
-        $userData['password'] = self::passwordToHash($userData['password']);
+        $userValidated['password'] = self::passwordToHash($userValidated['password']);
 
-        $created = User::create($userData);
+        $created = User::create($userValidated);
 
         if ($created) {
             return HttpResponses::success('User created successfully', 200, new UserResource($created));
