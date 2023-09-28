@@ -17,7 +17,7 @@ class UserRepository
         return UserResource::collection(User::all());
     }
 
-    public static function getOneUsers($userId)
+    public static function getOneUser($userId)
     {
         self::verifyUserExistent($userId);
 

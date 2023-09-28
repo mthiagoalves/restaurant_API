@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function show(string $userId)
     {
-        return UserRepository::getOneUsers($userId);
+        return UserRepository::getOneUser($userId);
     }
 
     /**
