@@ -33,6 +33,14 @@ Route::prefix('v1')->group(function () {
     Route::delete('/products/{id}', [ProductController::class, 'sendToTrash']);
     Route::delete('/products-destroy/{id}', [ProductController::class, 'destroy']);
 
+    //Categories
+    Route::get('/categories', [ProductController::class, 'index']);
+    Route::get('/categories/{id}', [ProductController::class, 'show']);
+    Route::post('/categories/store', [ProductController::class, 'store']);
+    Route::put('/categories/{id}', [ProductController::class, 'update']);
+    Route::delete('/categories/{id}', [ProductController::class, 'sendToTrash']);
+    Route::delete('/categories-destroy/{id}', [ProductController::class, 'destroy']);
+
     // Orders
     Route::get('/order', [OrderController::class, 'index']);
     Route::get('/order/{id}', [OrderController::class, 'show']);
