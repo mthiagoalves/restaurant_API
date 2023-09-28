@@ -18,16 +18,29 @@ class ProductController extends Controller
         return ProductRepository::getOneProduct($productId);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $dataProduct = $request->all();
 
         return ProductRepository::storeProduct($dataProduct);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request, $productId)
+    {
 
         $dataProduct = $request->all();
 
-        return ProductRepository::updateProduct($dataProduct);
+        return ProductRepository::updateProduct($dataProduct, $productId);
+    }
+
+    public function sendToTrash($productId)
+    {
+
+        return ProductRepository::sendToTrash($productId);
+    }
+    public function destroy($productId)
+    {
+
+        return ProductRepository::destoyProduct($productId);
     }
 }
