@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductRepository
 {
+    use HttpResponses;
+
     public static function getAllProducts()
     {
         return ProductResource::collection(Product::all());
@@ -16,12 +18,15 @@ class ProductRepository
 
     public static function getOneProduct($productId)
     {
-        self::verifyProductExistent($productId);
-
         $product = Product::where('id', $productId)->first();
 
-        if ($product == null) {
+        if (!$product) {
             $productTrashed = Product::onlyTrashed()->find($productId);
+
+            if (!$productTrashed) {
+                return HttpResponses::error('Product not found', 404);
+            }
+
             return HttpResponses::success('Product was deleted', 200, new ProductResource($productTrashed));
         }
 
@@ -45,7 +50,9 @@ class ProductRepository
 
         $productValidated = $validator->validated();
 
-        self::verifyUniqueFields($productValidated['slug']);
+        if (Product::where('slug', $productValidated['slug'])->exists()) {
+            return HttpResponses::error('Slug already exist, please insert another', 422);
+        }
 
         $productCreated = Product::create($productValidated);
 
@@ -54,21 +61,5 @@ class ProductRepository
         }
 
         return HttpResponses::error('Something wrong to create product', 400);
-    }
-
-    public static function verifyUniqueFields($productSlug)
-    {
-        if (Product::where('slug', $productSlug)->exists()) {
-            return HttpResponses::error('Slug already exist, please insert another', 422);
-        }
-    }
-
-    private static function verifyProductExistent($productId)
-    {
-        $product = Product::find($productId);
-
-        if (!$product) {
-            return HttpResponses::error('Product not found', 404);
-        }
     }
 }

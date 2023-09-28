@@ -15,7 +15,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/users/store', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}',  [UserController::class, 'sendToTrash']);
-    Route::delete('/users/{id}',  [UserController::class, 'destroy']);
+    Route::delete('/users-destroy/{id}',  [UserController::class, 'destroy']);
 
     // Tables
     Route::get('/tables', [TableController::class, 'index']);
@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/tables/store', [TableController::class, 'store']);
     Route::put('/tables/{id}', [TableController::class, 'update']);
     Route::delete('/tables/{id}', [TableController::class, 'sendToTrash']);
-    Route::delete('/tables/{id}', [TableController::class, 'destroy']);
+    Route::delete('/tables-destroy/{id}', [TableController::class, 'destroy']);
 
     //Products
     Route::get('/products', [ProductController::class, 'index']);
@@ -31,7 +31,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/products/store', [ProductController::class, 'store']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'sendToTrash']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    Route::delete('/products-destroy/{id}', [ProductController::class, 'destroy']);
 
     // Orders
     Route::get('/order', [OrderController::class, 'index']);
