@@ -17,4 +17,10 @@ class ProductController extends Controller
     {
         return ProductRepository::getOneProduct($productId);
     }
+
+    public function store(Request $request){
+        $dataProduct = $request->all();
+
+        return ProductRepository::storeProduct($dataProduct);
+    }
 }
