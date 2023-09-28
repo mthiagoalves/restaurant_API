@@ -62,4 +62,9 @@ class ProductRepository
 
         return HttpResponses::error('Something wrong to create product', 400);
     }
+
+    public static function updateProduct($dataProduct)
+    {
+        
+    }
 }

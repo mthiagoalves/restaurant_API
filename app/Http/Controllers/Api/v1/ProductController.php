@@ -23,4 +23,11 @@ class ProductController extends Controller
 
         return ProductRepository::storeProduct($dataProduct);
     }
+
+    public function update(Request $request) {
+
+        $dataProduct = $request->all();
+
+        return ProductRepository::updateProduct($dataProduct);
+    }
 }
