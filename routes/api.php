@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\v1\CategoryController;
 use App\Http\Controllers\Api\v1\OrderController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\TableController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -34,12 +34,12 @@ Route::prefix('v1')->group(function () {
     Route::delete('/products-destroy/{id}', [ProductController::class, 'destroy']);
 
     //Categories
-    Route::get('/categories', [ProductController::class, 'index']);
-    Route::get('/categories/{id}', [ProductController::class, 'show']);
-    Route::post('/categories/store', [ProductController::class, 'store']);
-    Route::put('/categories/{id}', [ProductController::class, 'update']);
-    Route::delete('/categories/{id}', [ProductController::class, 'sendToTrash']);
-    Route::delete('/categories-destroy/{id}', [ProductController::class, 'destroy']);
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::post('/categories/store', [CategoryController::class, 'store']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'sendToTrash']);
+    Route::delete('/categories-destroy/{id}', [CategoryController::class, 'destroy']);
 
     // Orders
     Route::get('/order', [OrderController::class, 'index']);
