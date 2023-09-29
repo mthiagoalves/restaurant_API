@@ -17,42 +17,46 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $dataCategory = $request->all();
+
+        return CategoryRepository::storeCategory($dataCategory);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $categoryId)
     {
-        //
+        return CategoryRepository::getOneCategory($categoryId);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $categoryId)
     {
-        //
+        $dataCategory = $request->all();
+
+        return CategoryRepository::updateCategory($dataCategory, $categoryId);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function sendToTrash(string $categoryId)
     {
-        //
+        return CategoryRepository::sendToTrash($categoryId);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $categoryId)
+    {
+        return CategoryRepository::destoyCategory($categoryId);
     }
 }
