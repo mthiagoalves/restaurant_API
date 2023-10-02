@@ -8,11 +8,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
 {
-    private array $types = ['CD' => 'Cartão Débito', 'CC' => 'Cartão Crédito', 'B' => 'Boleto', 'P' => 'Pix'];
+    private array $orderStatus = ['OP' => 'Opening', 'RC' => 'Received', 'IP' => 'In Preparation', 'ID' => 'To Delivered', 'CP' => 'Complete'];
 
     public function toArray(Request $request): array
     {
-        $paid = $this->paid;
         return [
             'user' => [
                 'name' => $this->user->name,
@@ -22,11 +21,7 @@ class OrderResource extends JsonResource
             'table' => [
                 'tableNumble' => $this->table->number
             ],
-            'payment_type' => $this->types[$this->payment_type],
-            'value' => 'R$ ' . number_format($this->value, 2, ',', '.'),
-            'paid' => $paid ? 'Pago' : 'Não Pago',
-            'paymentDate' => $paid ? Carbon::parse($this->payment_date)->format('d/m/Y H:i:s') : Null,
-            'paymentSince' => $paid ? Carbon::parse($this->payment_date)->diffForHumans() : Null
+            'status' => $this->orderStatus[$this->status],
         ];
     }
 }

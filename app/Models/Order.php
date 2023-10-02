@@ -17,11 +17,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'table_id',
-        'payment_type',
-        'paid',
         'status',
-        'payment_date',
-        'value'
     ];
 
     public function user()

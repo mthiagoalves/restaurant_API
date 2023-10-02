@@ -22,10 +22,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => User::all()->random()->id,
             'table_id' => Table::all()->random()->id,
-            'payment_type' => $this->faker->randomElement(['B', 'CC', 'CD', 'P']),
-            'paid' => $paid,
-            'value' => $this->faker->numberBetween(1000, 10000),
-            'payment_date' => $paid ? $this->faker->randomElement([$this->faker->dateTimeThisMonth()]) : NULL
+            'status' => $this->faker->randomElement(['OP', 'RC', 'IP', 'ID', 'CP']),
         ];
     }
 }
