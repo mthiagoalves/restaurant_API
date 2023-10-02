@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\v1;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,13 +17,13 @@ class TableResource extends JsonResource
     {
         if ($this->deleted_at != null) {
             return [
-                'number' => $this->name,
+                'number' => $this->number,
                 'deleted' => Carbon::parse($this->deleted_at)->format('d/m/Y - H:i:s')
             ];
         }
 
         return [
-            'number' => $this->name,
+            'number' => $this->number,
         ];
     }
 }
