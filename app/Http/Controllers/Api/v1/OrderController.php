@@ -26,33 +26,17 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'table_id' => 'required',
-            'payment_type' => 'required|string|max:2',
-            'paid' => 'required|boolean',
-            'payment_date' => 'nullable',
-            'value' => 'required|numeric'
-        ]);
+        $dataOrder = $request->all();
 
-        if ($validator->fails()) {
-            return $this->error('Data Invalid', 422, $validator->errors());
-        }
-
-        $created = Order::create($validator->validated());
-
-        if ($created) {
-            return $this->success('Order created', 200, new OrderResource($created));
-        }
-        return $this->error('Something wrong to craeted order', 400);
+        return OrderRepository::storeOrder($dataOrder);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show(string $orderId)
     {
-        return new OrderResource($order);
+        return OrderRepository::getOneOrder($orderId);
     }
 
     /**
