@@ -42,8 +42,8 @@ Route::prefix('v1')->group(function () {
     Route::delete('/categories-destroy/{id}', [CategoryController::class, 'destroy']);
 
     // Orders
-    Route::get('/order', [OrderController::class, 'index']);
-    Route::get('/order/{id}', [OrderController::class, 'show']);
-    Route::post('/order', [OrderController::class, 'store']);
-    Route::put('/order/{id}', [OrderController::class, 'update']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
 });
