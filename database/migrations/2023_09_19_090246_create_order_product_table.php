@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products');
             $table->integer('quantity');
             $table->string('note', 250);
+            $table->string('status', 250);
             $table->timestamps();
             $table->softDeletes();
 

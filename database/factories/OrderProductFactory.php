@@ -18,7 +18,6 @@ class OrderProductFactory extends Factory
      */
     public function definition(): array
     {
-        // Recupera um pedido e um produto aleatoriamente
         $order = Order::inRandomOrder()->first();
         $product = Product::inRandomOrder()->first();
 
@@ -27,6 +26,7 @@ class OrderProductFactory extends Factory
             'product_id' => $product->id,
             'quantity' => $this->faker->numberBetween(1, 10),
             'note' => $this->faker->text(50),
+            'status' => $this->faker->randomElement(['OP', 'RC', 'IP', 'ID', 'CP']),
         ];
     }
 }
