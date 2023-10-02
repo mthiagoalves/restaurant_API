@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Repositories\v1\OrderRepository;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\Order;
 use App\Traits\HttpResponses;
@@ -17,7 +18,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return OrderResource::collection(Order::all());
+        return OrderRepository::getAllOrders();
     }
 
     /**
