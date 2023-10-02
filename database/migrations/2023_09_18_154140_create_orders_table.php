@@ -17,10 +17,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('table_id');
             $table->foreign('table_id')->references('id')->on('tables');
-            $table->string('payment_type');
-            $table->boolean('paid');
-            $table->decimal('value', 10, 2);
-            $table->datetime('payment_date')->nullable();
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });
