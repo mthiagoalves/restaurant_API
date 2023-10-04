@@ -59,6 +59,8 @@ class UserRepository
 
         $userValidated['password'] = self::passwordToHash($userValidated['password']);
 
+        $userValidated['user_level'] = 'user';
+
         $created = User::create($userValidated);
 
         if ($created) {
