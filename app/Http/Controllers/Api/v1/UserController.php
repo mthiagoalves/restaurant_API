@@ -54,10 +54,28 @@ class UserController extends Controller
         return UserRepository::sendToTrash($userId);
     }
 
-     /**
+    /**
      * Remove the specified resource to DB.
      */
-    public function destroy(string $userId){
+    public function destroy(string $userId)
+    {
         return UserRepository::destroyUser($userId);
+    }
+
+    /**
+     * Display the specified authenticated resource.
+     */
+    public function getUserAuthenticated()
+    {
+        return UserRepository::getUserAuthenticated();
+    }
+    /**
+     * Update the specified authenticated user.
+     */
+    public function updateUserAuthenticated(Request $request)
+    {
+        $dataUser = $request->all();
+
+        return UserRepository::updateUserAuthenticated($dataUser);
     }
 }

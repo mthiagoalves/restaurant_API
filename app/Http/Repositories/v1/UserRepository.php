@@ -6,6 +6,7 @@ use App\Http\Resources\v1\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\HttpResponses;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository
@@ -19,7 +20,9 @@ class UserRepository
 
     public static function getOneUser($userId)
     {
-        if (!User::find($userId)) {
+        $user = User::where('id', $userId)->first();
+
+        if (!$user) {
             $userTrashed = User::onlyTrashed()->find($userId);
 
             if ($userTrashed) {
@@ -28,8 +31,6 @@ class UserRepository
 
             return HttpResponses::error('User not found', 404);
         }
-
-        $user = User::where('id', $userId)->first();
 
         return new UserResource($user);
     }
@@ -165,5 +166,75 @@ class UserRepository
     private static function passwordToHash($userPassword)
     {
         return Hash::make($userPassword);
+    }
+
+    // Authenticated functions
+
+    public static function getUserAuthenticated()
+    {
+        $userAuthenticated = Auth::user();
+
+        $user = User::where('id', $userAuthenticated->id)->first();
+
+        if (!$user) {
+            $userTrashed = User::onlyTrashed()->find($user->id);
+
+            if ($userTrashed) {
+                return HttpResponses::success('User was deleted', 200, new UserResource($userTrashed));
+            }
+
+            return HttpResponses::error('User not found', 404);
+        }
+
+        return new UserResource($user);
+    }
+
+    public static function updateUserAuthenticated($dataUser)
+    {
+        $validator = Validator::make($dataUser, [
+            "name" => "string|max:150|required",
+            "username" => "string|max:150|required",
+            "email" => "email|required",
+            "email_verified_at" => "nullable",
+            "password" => ["string", "required", "regex:/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/"],
+            "remember_token" => "string|nullable"
+        ]);
+
+        if ($validator->fails()) {
+            return HttpResponses::error('Data Invalid', 422, $validator->errors());
+        }
+
+        $userAuthenticated = Auth::user();
+
+        $user = User::where('id', $userAuthenticated->id)->first();
+
+        if (!$user) {
+            $userTrashed = User::onlyTrashed()->find($user->id);
+
+            if ($userTrashed) {
+                return HttpResponses::success('User was deleted', 200, new UserResource($userTrashed));
+            }
+
+            return HttpResponses::error('User not found', 404);
+        }
+
+        if (User::where('username', $validator->validated()["username"])->exists()) {
+            return HttpResponses::error('Username already exist, please insert another.', 422);
+        } else if (User::where('email', $validator->validated()["email"])->exists()) {
+            return HttpResponses::error('Email already registred, please insert another.', 422);
+        }
+
+        $user->update([
+            "name" => $validator->validated()["name"],
+            "username" => $validator->validated()["username"],
+            "email" => $validator->validated()["email"],
+            "password" => self::passwordToHash($validator->validated()['password'])
+        ]);
+
+        if ($user) {
+            return HttpResponses::success('User has been updated', 200, new UserResource($user));
+        }
+
+        return HttpResponses::error('Something wrong to update user', 422);
     }
 }
