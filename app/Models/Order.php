@@ -30,6 +30,11 @@ class Order extends Model
         return $this->belongsTo(Table::class);
     }
 
+    public function order_product()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
     public function filter(Request $request)
     {
         $queryFilter = (new OrderFilter)->filter($request);
