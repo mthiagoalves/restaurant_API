@@ -50,10 +50,18 @@ class OrderController extends Controller
     }
 
     /**
-     * Delete the specified resource in storage.
+     * Delete the specified resource in DB.
      */
-    public function destroy(string $id)
+    public function sendToTrash(string $orderId)
     {
-        //
+        return OrderRepository::sendToTrash($orderId);
+    }
+
+    /**
+     * Delete the specified resource in DB.
+     */
+    public function destroy(string $orderId)
+    {
+        return OrderRepository::destroyOrder($orderId);
     }
 }
