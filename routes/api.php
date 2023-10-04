@@ -46,4 +46,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders/store', [OrderController::class, 'store']);
     Route::patch('/orders/{id}', [OrderController::class, 'update']);
+    Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash']);
+    Route::delete('/orders-destroy/{id}', [OrderController::class, 'destroy']);
 });
