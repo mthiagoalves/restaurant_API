@@ -18,11 +18,10 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $paid = $this->faker->boolean();
         return [
             'user_id' => User::all()->random()->id,
             'table_id' => Table::all()->random()->id,
-            'status' => $this->faker->randomElement(['OP', 'RC', 'IP', 'ID', 'CP']),
+            'status' => $this->faker->randomElement(['OP', 'IC', 'AB', 'P']),
         ];
     }
 }

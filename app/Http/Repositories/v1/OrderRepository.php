@@ -37,11 +37,9 @@ class OrderRepository
 
     public static function storeOrder($dataOrder)
     {
-
         $validator = Validator::make($dataOrder, [
             'user_id' => 'string|required',
             'table_id' => 'string|required',
-            'status' => 'string|nullable',
             'products' => 'array|required'
         ]);
 
@@ -50,6 +48,8 @@ class OrderRepository
         }
 
         $orderValidated = $validator->validated();
+
+        $orderValidated['status'] = 'OP';
 
         $orderCreated = Order::create($orderValidated);
 
@@ -68,5 +68,27 @@ class OrderRepository
         }
 
         return HttpResponses::error('Something wrong to create order', 400);
+    }
+
+    public static function updateOrder($dataOrder, $orderId)
+    {
+        $validator = Validator::make($dataOrder, [
+            'status' => 'string|nullable',
+            'products' => 'array|nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return HttpResponses::error('Data invalid', 422, $validator->errors());
+        }
+
+        $orderValidated = $validator->validated();
+
+        $orderAtUpdated = Order::where('id', $orderId)->with()->first();
+
+        if (isset($orderValidated['status'])) {
+            $orderAtUpdated->update(['status' => $orderValidated['status']]);
+        }
+
+        
     }
 }

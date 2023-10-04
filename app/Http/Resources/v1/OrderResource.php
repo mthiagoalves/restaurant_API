@@ -1,14 +1,12 @@
 <?php
 
 namespace App\Http\Resources\v1;
-
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
 {
-    private array $orderStatus = ['OP' => 'Opening', 'RC' => 'Received', 'IP' => 'In Preparation', 'ID' => 'To Delivered', 'CP' => 'Complete'];
+    private array $orderStatus = ['OP' => 'Opening', 'IC' => 'In consumption', 'AB' => 'Asked for the bill', 'P' => 'Paid'];
 
     public function toArray(Request $request): array
     {
@@ -21,6 +19,7 @@ class OrderResource extends JsonResource
             'table' => [
                 'tableNumble' => $this->table->number
             ],
+            'products' => OrderProductResource::collection($this->order_product),
             'status' => $this->orderStatus[$this->status],
         ];
     }

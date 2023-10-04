@@ -42,36 +42,11 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, string $orderId)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'table_id' => 'required',
-            'payment_type' => 'required|string|max:2',
-            'paid' => 'required|boolean',
-            'payment_date' => 'nullable',
-            'value' => 'required|numeric'
-        ]);
+        $dataOrder = $request->all();
 
-        if ($validator->fails()) {
-            return $this->error('Validation failed', 422, $validator->errors());
-        }
-
-        $validated = $validator->validated();
-
-        $updated = $order->update([
-            'user_id' => $validated['user_id'],
-            'table_id' => $validated['table_id'],
-            'payment_type' => $validated['payment_type'],
-            'paid' => $validated['paid'],
-            'payment_date' => $validated['paid'] ? $validated['payment_date'] : null
-        ]);
-
-        if ($updated) {
-            return $this->success('Orders Updated', 200, new OrderResource($updated));
-        }
-
-        return $this->error('Orders not updated, something wrong', 400);
+        return OrderRepository::updateOrder($dataOrder, $orderId);
     }
 
     /**
