@@ -27,13 +27,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/products/{id}', [ProductController::class, 'show']);
 
         // Orders
-        Route::get('order-active', [OrderController::class, 'getOrderCreatedOnSeason']);
-        Route::get('/orders', [OrderController::class, 'index']);
-        Route::get('/orders/{id}', [OrderController::class, 'show']);
         Route::post('/orders/store', [OrderController::class, 'store']);
-        Route::patch('/orders/{id}', [OrderController::class, 'update']);
-        Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash']);
-        Route::delete('/orders-destroy/{id}', [OrderController::class, 'destroy']);
+        Route::get('/orders-active', [OrderController::class, 'getOrderCreatedOnSeason']);
+        Route::post('/orders-add-products', [OrderController::class, 'addMoreProductToOrder']);
+        Route::patch('/orders-update-products/{id}', [OrderController::class, 'updateOrderProducts']);
 
         // Logout
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -69,5 +66,13 @@ Route::prefix('v1')->group(function () {
         Route::put('/categories/{id}', [CategoryController::class, 'update']);
         Route::delete('/categories/{id}', [CategoryController::class, 'sendToTrash']);
         Route::delete('/categories-destroy/{id}', [CategoryController::class, 'destroy']);
+
+        //Orders
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::get('/orders/{id}', [OrderController::class, 'show']);
+        // Route::post('/orders/store', [OrderController::class, 'store']);
+        Route::patch('/orders/{id}', [OrderController::class, 'update']);
+        Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash']);
+        Route::delete('/orders-destroy/{id}', [OrderController::class, 'destroy']);
     });
 });
