@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('status', 250);
             $table->timestamps();
             $table->softDeletes();
-
-            $table->unique(['order_id', 'product_id']);
         });
     }
 
