@@ -37,17 +37,19 @@ class OrderRepository
     public static function storeOrder($dataOrder)
     {
         $validator = Validator::make($dataOrder, [
-            'user_id' => 'string|required',
             'table_id' => 'string|required',
-            'products' => 'array|required'
+            'products' => 'array|required',
         ]);
 
         if ($validator->fails()) {
             return HttpResponses::error('Data invalid', 422, $validator->errors());
         }
 
+        $user = UserRepository::getUserAuthenticated();
+
         $orderValidated = $validator->validated();
 
+        $orderValidated['user_id'] = $user->id;
         $orderValidated['status'] = 'OP';
 
         $orderCreated = Order::create($orderValidated);
