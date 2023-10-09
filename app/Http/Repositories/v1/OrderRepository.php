@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories\v1;
 
+use App\Http\Resources\v1\OrderProductResource;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -153,5 +154,66 @@ class OrderRepository
         }
 
         return new OrderResource($order);
+    }
+
+    public static function addMoreProductToOrder($dataOrderProduct)
+    {
+        $validator = Validator::make($dataOrderProduct, [
+            'products' => 'array|required',
+        ]);
+
+        if ($validator->fails()) {
+            return HttpResponses::error('Data invalid', 422, $validator->errors());
+        }
+
+        $user = UserRepository::getUserAuthenticated();
+
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+
+        if ($order) {
+            foreach ($validator->validated()['products'] as $productData) {
+                $orderProduct = new OrderProduct();
+                $orderProduct->order_id = $order->id;
+                $orderProduct->product_id = $productData['product_id'];
+                $orderProduct->quantity = $productData['quantity'];
+                $orderProduct->note = $productData['note'];
+                $orderProduct->status = 'OP';
+
+                $orderProduct->save();
+            }
+            return HttpResponses::success('Order created', 201);
+        }
+    }
+
+    public static function updateOrderProducts($dataOrderProduct, $orderProductId)
+    {
+        $validator = Validator::make($dataOrderProduct, [
+            'product_id' => 'integer|required',
+            'quantity' => 'integer|required',
+            'note' => 'string|nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return HttpResponses::error('Data invalid', 422, $validator->errors());
+        }
+
+        $user = UserRepository::getUserAuthenticated();
+
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+
+        $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'OP')->first();
+
+        $orderProduct->update([
+            'product_id' => $validator->validated()['product_id'],
+            'quanity' => $validator->validated()['quantity'],
+            'note' => $validator->validated()['note'],
+            'status' => 'OP'
+        ]);
+
+        if ($orderProduct) {
+            return HttpResponses::success('Order updated', 200, new OrderResource(Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first()));
+        }
+
+        return HttpResponses::error('Something wrong to updated order', 422);
     }
 }

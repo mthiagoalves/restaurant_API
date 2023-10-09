@@ -66,4 +66,18 @@ class OrderController extends Controller
     {
         return OrderRepository::getOrderCreatedOnSeason();
     }
+
+    public function addMoreProductToOrder(Request $request)
+    {
+        $dataOrderProduct = $request->all();
+
+        return OrderRepository::addMoreProductToOrder($dataOrderProduct);
+    }
+
+    public function updateOrderProducts(Request $request, $orderProductId)
+    {
+        $dataOrderProduct = $request->all();
+        
+        return OrderRepository::updateOrderProducts($dataOrderProduct, $orderProductId);
+    }
 }
