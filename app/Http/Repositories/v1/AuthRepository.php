@@ -18,7 +18,7 @@ class AuthRepository
             $abilities = ($userAuthenticated->user_level === 'admin') ? ['admin'] : ['user'];
 
             return HttpResponses::success('Authorized', 200, [
-                'token' => $request->user()->createToken('anytime', $abilities)->plainTextToken
+                'token' => $request->user()->createToken('loginToken', $abilities)->plainTextToken
             ]);
         }
 
