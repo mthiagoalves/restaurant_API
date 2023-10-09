@@ -61,4 +61,9 @@ class OrderController extends Controller
     {
         return OrderRepository::destroyOrder($orderId);
     }
+
+    public function getOrderCreatedOnSeason()
+    {
+        return OrderRepository::getOrderCreatedOnSeason();
+    }
 }

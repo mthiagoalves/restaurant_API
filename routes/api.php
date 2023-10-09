@@ -27,6 +27,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/products/{id}', [ProductController::class, 'show']);
 
         // Orders
+        Route::get('order-active', [OrderController::class, 'getOrderCreatedOnSeason']);
         Route::get('/orders', [OrderController::class, 'index']);
         Route::get('/orders/{id}', [OrderController::class, 'show']);
         Route::post('/orders/store', [OrderController::class, 'store']);

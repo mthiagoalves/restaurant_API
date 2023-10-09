@@ -6,6 +6,7 @@ use App\Http\Resources\v1\OrderResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Traits\HttpResponses;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class OrderRepository
@@ -133,5 +134,24 @@ class OrderRepository
             return HttpResponses::success('Order has been deleted', 200, new OrderResource($orderAtDeleted));
         }
         return HttpResponses::error('Something wrong to delete order', 422);
+    }
+
+    public static function getOrderCreatedOnSeason()
+    {
+        $user = UserRepository::getUserAuthenticated();
+
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+
+        if (!$order) {
+            $orderTrashed = Order::onlyTrashed()->find($order->id);
+
+            if (!$orderTrashed) {
+                return HttpResponses::error('Order not found', 404);
+            }
+
+            return HttpResponses::success('Order was deleted', 200, new OrderResource($orderTrashed));
+        }
+
+        return new OrderResource($order);
     }
 }
