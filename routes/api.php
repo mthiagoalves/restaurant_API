@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\auth\AuthController;
 use App\Http\Controllers\Api\v1\CategoryController;
+use App\Http\Controllers\Api\v1\EmailController;
 use App\Http\Controllers\Api\v1\OrderController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\ProductController;
@@ -16,7 +17,7 @@ Route::prefix('v1')->group(function () {
     //register new user
     Route::post('/users/store', [UserController::class, 'store'])->name('storeUser');
 
-    Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
+    Route::middleware(['auth:sanctum', 'ability:user,admin', 'verified'])->group(function () {
 
         // Users Authenticated
         Route::get('/in/{username}', [UserController::class, 'getUserAuthenticated'])->name('getUserAuthenticated');
@@ -33,11 +34,19 @@ Route::prefix('v1')->group(function () {
         Route::patch('/orders-update-products/{id}', [OrderController::class, 'updateOrderProducts'])->name('updateOrderProducts');
         Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash'])->name('sendOrderToTrash');
 
+        // Email verify
+
+        Route::get('/email/verify', [EmailController::class, 'showVerificationNotice'])->name('verification.notice');
+
+        Route::get('/email/verify/{id}/{hash}', [EmailController::class, 'verify'])->name('verification.verify');
+
+        Route::post('/email/verification-notification', [EmailController::class, 'sendVerificationNotification'])->name('verification.send');
+
         // Logout
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 
-    Route::middleware('auth:sanctum', 'ability:admin')->group(function () {
+    Route::middleware('auth:sanctum', 'ability:admin', 'verified')->group(function () {
 
         // Users
         Route::get('/users', [UserController::class, 'index'])->name('getAllUsers');
