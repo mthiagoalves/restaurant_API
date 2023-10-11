@@ -65,7 +65,8 @@ class UserRepository
         $created = User::create($userValidated);
 
         if ($created) {
-            return HttpResponses::success('User created successfully', 200, new UserResource($created));
+            $created->sendEmailVerificationNotification();
+            return HttpResponses::success('User created successfully, verify your email to validated.', 200, new UserResource($created));
         }
 
         return HttpResponses::error('Something wrong to create user', 400);
