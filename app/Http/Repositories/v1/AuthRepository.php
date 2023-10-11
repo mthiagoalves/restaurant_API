@@ -22,6 +22,6 @@ class AuthRepository
             ]);
         }
 
-        return HttpResponses::error('Not authorized', 403);
+        return HttpResponses::error('Invalid credentials', 401);
     }
 }
