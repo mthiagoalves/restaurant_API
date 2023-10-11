@@ -93,28 +93,6 @@ class OrderRepository
         }
     }
 
-    public static function sendToTrash($orderId)
-    {
-        $orderAtDeleted = Order::find($orderId);
-
-        if (!$orderAtDeleted) {
-            $orderTrashed = Order::onlyTrashed()->find($orderId);
-
-            if (!$orderTrashed) {
-                return HttpResponses::error('Order not found', 404);
-            }
-
-            return HttpResponses::success('Order was deleted', 200, new OrderResource($orderTrashed));
-        }
-
-        $orderAtDeleted->delete();
-
-        if ($orderAtDeleted) {
-            return HttpResponses::success('Order has been deleted', 200, new OrderResource($orderAtDeleted));
-        }
-        return HttpResponses::error('Something wrong to delete order', 422);
-    }
-
     public static function destroyOrder($orderId)
     {
         $orderAtDeleted = Order::find($orderId);
@@ -215,5 +193,29 @@ class OrderRepository
         }
 
         return HttpResponses::error('Something wrong to updated order', 422);
+    }
+
+    public static function sendToTrash($orderId)
+    {
+        $user = UserRepository::getUserAuthenticated();
+
+        $orderAtDeleted = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+
+        if (!$orderAtDeleted) {
+            $orderTrashed = Order::onlyTrashed()->find($orderId);
+
+            if (!$orderTrashed) {
+                return HttpResponses::error('Order not found', 404);
+            }
+
+            return HttpResponses::success('Order was deleted', 200, new OrderResource($orderTrashed));
+        }
+
+        $orderAtDeleted->delete();
+
+        if ($orderAtDeleted) {
+            return HttpResponses::success('Order has been deleted', 200, new OrderResource($orderAtDeleted));
+        }
+        return HttpResponses::error('Something wrong to delete order', 422);
     }
 }
