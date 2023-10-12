@@ -19,7 +19,6 @@ Before getting started, make sure you have the following prerequisites installed
     ```bash
      git clone https://github.com/mthiagoalves/restaurant_API.git
 
-
 2. Navigate to the project directory:
 
     ```bash
