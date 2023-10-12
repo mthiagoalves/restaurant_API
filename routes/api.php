@@ -32,7 +32,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/orders-active', [OrderController::class, 'getOrderCreatedOnSeason'])->name('getOrderWithUserAuthenticated');
             Route::post('/orders-add-products', [OrderController::class, 'addMoreProductToOrder'])->name('addMoreProductToOrder');
             Route::patch('/orders-update-products/{id}', [OrderController::class, 'updateOrderProducts'])->name('updateOrderProducts');
-            Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash'])->name('sendOrderToTrash');
+            Route::delete('/orders-send-to-trash', [OrderController::class, 'sendToTrash'])->name('sendOrderToTrash');
         });
 
         // Email verify

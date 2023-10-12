@@ -49,9 +49,9 @@ class OrderController extends Controller
     /**
      * Delete the specified resource in DB.
      */
-    public function sendToTrash(string $orderId)
+    public function sendToTrash()
     {
-        return OrderRepository::sendToTrash($orderId);
+        return OrderRepository::sendToTrash();
     }
 
     /**
@@ -77,7 +77,7 @@ class OrderController extends Controller
     public function updateOrderProducts(Request $request, $orderProductId)
     {
         $dataOrderProduct = $request->all();
-        
+
         return OrderRepository::updateOrderProducts($dataOrderProduct, $orderProductId);
     }
 }

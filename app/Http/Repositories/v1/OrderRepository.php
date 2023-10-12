@@ -119,16 +119,10 @@ class OrderRepository
     {
         $user = UserRepository::getUserAuthenticated();
 
-        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
 
         if (!$order) {
-            $orderTrashed = Order::onlyTrashed()->find($order->id);
-
-            if (!$orderTrashed) {
-                return HttpResponses::error('Order not found', 404);
-            }
-
-            return HttpResponses::success('Order was deleted', 200, new OrderResource($orderTrashed));
+            return HttpResponses::error('No order created', 404);
         }
 
         return new OrderResource($order);
@@ -146,7 +140,7 @@ class OrderRepository
 
         $user = UserRepository::getUserAuthenticated();
 
-        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
 
         if ($order) {
             foreach ($validator->validated()['products'] as $productData) {
@@ -177,7 +171,7 @@ class OrderRepository
 
         $user = UserRepository::getUserAuthenticated();
 
-        $order = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
 
         $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'OP')->first();
 
@@ -189,26 +183,22 @@ class OrderRepository
         ]);
 
         if ($orderProduct) {
-            return HttpResponses::success('Order updated', 200, new OrderResource(Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first()));
+            return HttpResponses::success('Order updated', 200, new OrderResource(Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first()));
         }
 
         return HttpResponses::error('Something wrong to updated order', 422);
     }
 
-    public static function sendToTrash($orderId)
+    public static function sendToTrash()
     {
         $user = UserRepository::getUserAuthenticated();
 
-        $orderAtDeleted = Order::where('user_id', $user->id)->whereDate('created_at', '<=', Carbon::today())->orderBy('id', 'ASC')->first();
+        $orderAtDeleted = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
 
         if (!$orderAtDeleted) {
-            $orderTrashed = Order::onlyTrashed()->find($orderId);
-
-            if (!$orderTrashed) {
-                return HttpResponses::error('Order not found', 404);
-            }
-
-            return HttpResponses::success('Order was deleted', 200, new OrderResource($orderTrashed));
+            return HttpResponses::error('Order not found', 404);
+        } elseif ($orderAtDeleted->status !== 'OP') {
+            return HttpResponses::error("Your orders already opening, you can't delete it", 402);
         }
 
         $orderAtDeleted->delete();
