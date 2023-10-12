@@ -26,7 +26,7 @@ class OrderProductFactory extends Factory
             'product_id' => $product->id,
             'quantity' => $this->faker->numberBetween(1, 10),
             'note' => $this->faker->text(50),
-            'status' => $this->faker->randomElement(['OP', 'RC', 'IP', 'ID', 'CP']),
+            'status' => $this->faker->randomElement(['RC', 'IP', 'ID', 'CP']),
         ];
     }
 }

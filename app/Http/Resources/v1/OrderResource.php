@@ -19,7 +19,7 @@ class OrderResource extends JsonResource
             'table' => [
                 'tableNumble' => $this->table->number
             ],
-            'products' => OrderProductResource::collection($this->order_product),
+            'products_in_the_order' => OrderProductResource::collection($this->order_product),
             'status' => $this->orderStatus[$this->status],
         ];
     }

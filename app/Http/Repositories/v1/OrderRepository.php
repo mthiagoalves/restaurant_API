@@ -173,13 +173,17 @@ class OrderRepository
 
         $order = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
 
-        $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'OP')->first();
+        $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'RC')->first();
+
+        if(!$orderProduct) {
+            return HttpResponses::error('Product is not added in your order', 404);
+        }
 
         $orderProduct->update([
             'product_id' => $validator->validated()['product_id'],
-            'quanity' => $validator->validated()['quantity'],
+            'quantity' => $validator->validated()['quantity'],
             'note' => $validator->validated()['note'],
-            'status' => 'OP'
+            'status' => 'RC'
         ]);
 
         if ($orderProduct) {
