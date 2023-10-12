@@ -17,25 +17,25 @@ Route::prefix('v1')->group(function () {
     //register new user
     Route::post('/users/store', [UserController::class, 'store'])->name('storeUser');
 
-    Route::middleware(['auth:sanctum', 'ability:user,admin', 'verified'])->group(function () {
+    Route::middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
+        Route::middleware('verified')->group(function () {
+            // Users Authenticated
+            Route::get('/in/{username}', [UserController::class, 'getUserAuthenticated'])->name('getUserAuthenticated');
+            Route::put('/in/{username}', [UserController::class, 'updateUserAuthenticated'])->name('updateUserAuthenticated');
 
-        // Users Authenticated
-        Route::get('/in/{username}', [UserController::class, 'getUserAuthenticated'])->name('getUserAuthenticated');
-        Route::put('/in/{username}', [UserController::class, 'updateUserAuthenticated'])->name('updateUserAuthenticated');
+            //Products
+            Route::get('/products', [ProductController::class, 'index'])->name('getAllProducts');
+            Route::get('/products/{id}', [ProductController::class, 'show'])->name('getOneProduct');
 
-        //Products
-        Route::get('/products', [ProductController::class, 'index'])->name('getAllProducts');
-        Route::get('/products/{id}', [ProductController::class, 'show'])->name('getOneProduct');
-
-        // Orders
-        Route::post('/orders/store', [OrderController::class, 'store'])->name('storeOrder');
-        Route::get('/orders-active', [OrderController::class, 'getOrderCreatedOnSeason'])->name('getOrderWithUserAuthenticated');
-        Route::post('/orders-add-products', [OrderController::class, 'addMoreProductToOrder'])->name('addMoreProductToOrder');
-        Route::patch('/orders-update-products/{id}', [OrderController::class, 'updateOrderProducts'])->name('updateOrderProducts');
-        Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash'])->name('sendOrderToTrash');
+            // Orders
+            Route::post('/orders/store', [OrderController::class, 'store'])->name('storeOrder');
+            Route::get('/orders-active', [OrderController::class, 'getOrderCreatedOnSeason'])->name('getOrderWithUserAuthenticated');
+            Route::post('/orders-add-products', [OrderController::class, 'addMoreProductToOrder'])->name('addMoreProductToOrder');
+            Route::patch('/orders-update-products/{id}', [OrderController::class, 'updateOrderProducts'])->name('updateOrderProducts');
+            Route::delete('/orders/{id}', [OrderController::class, 'sendToTrash'])->name('sendOrderToTrash');
+        });
 
         // Email verify
-
         Route::get('/email/verify', [EmailController::class, 'showVerificationNotice'])->name('verification.notice');
 
         Route::get('/email/verify/{id}/{hash}', [EmailController::class, 'verify'])->name('verification.verify');
