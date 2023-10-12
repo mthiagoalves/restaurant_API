@@ -80,4 +80,9 @@ class OrderController extends Controller
 
         return OrderRepository::updateOrderProducts($dataOrderProduct, $orderProductId);
     }
+
+    public function removeProductFromTheOrder($orderProductId)
+    {
+        return OrderRepository::removeProductFromTheOrder($orderProductId);
+    }
 }

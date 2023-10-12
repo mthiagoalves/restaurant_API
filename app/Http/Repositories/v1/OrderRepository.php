@@ -160,7 +160,6 @@ class OrderRepository
     public static function updateOrderProducts($dataOrderProduct, $orderProductId)
     {
         $validator = Validator::make($dataOrderProduct, [
-            'product_id' => 'integer|required',
             'quantity' => 'integer|required',
             'note' => 'string|nullable',
         ]);
@@ -175,12 +174,11 @@ class OrderRepository
 
         $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'RC')->first();
 
-        if(!$orderProduct) {
+        if (!$orderProduct) {
             return HttpResponses::error('Product is not added in your order', 404);
         }
 
         $orderProduct->update([
-            'product_id' => $validator->validated()['product_id'],
             'quantity' => $validator->validated()['quantity'],
             'note' => $validator->validated()['note'],
             'status' => 'RC'
@@ -191,6 +189,26 @@ class OrderRepository
         }
 
         return HttpResponses::error('Something wrong to updated order', 422);
+    }
+
+    public static function removeProductFromTheOrder($orderProductId)
+    {
+        $user = UserRepository::getUserAuthenticated();
+
+        $order = Order::where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::today())->orderBy('id', 'ASC')->first();
+
+        $orderProduct = OrderProduct::where('id', $orderProductId)->where('order_id', $order->id)->where('status', 'RC')->first();
+
+        if (!$orderProduct) {
+            return HttpResponses::error('Product is not added in your order or is it already being produced', 404);
+        }
+
+        $orderProduct->delete();
+
+        if ($orderProduct) {
+            return HttpResponses::success('Product removed from order', 200, new OrderResource($order));
+        }
+        return HttpResponses::error('Something wrong to delete order', 422);
     }
 
     public static function sendToTrash()
