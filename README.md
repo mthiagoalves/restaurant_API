@@ -30,7 +30,6 @@ Before getting started, make sure you have the following prerequisites installed
     ```bash
         composer install
 
-
 4. Create an environment file from the example file:
 
     ```bash
