@@ -6,22 +6,53 @@ Welcome to the Restaurant Order order processing system repository. This project
 
 Before getting started, make sure you have the following prerequisites installed:
 
-- PHP (8+ recommended)
-- Composer
-- Laravel (10.x)
-- Database (e.g., MySQL)
-- Web server (e.g., Apache, Nginx)
+-   PHP (8+ recommended)
+-   Composer
+-   Laravel (10.x)
+-   Database (e.g., MySQL)
+-   Web server (e.g., Apache, Nginx)
 
 ## Installation
 
 1. Clone this repository to your local machine:
 
-   ```bash
-    git clone https://github.com/mthiagoalves/restaurant_API.git
-    ```
-1.1 Navigate to the project directory:
- 
     ```bash
-        cd restaurant-xyz-backend
-    ```
+     git clone https://github.com/mthiagoalves/restaurant_API.git
+
+
+2. Navigate to the project directory:
+
+    ```bash
+        cd restaurant_API
+
+3. Install Composer dependencies:
+
+    ```bash
+        composer install
+
+
+4. Create an environment file from the example file:
+
+    ```bash
+        cp .env.example .env
+
+5. Configure the environment variables in the .env file to match your database configuration and other settings.
+
+6. Generate an application key:
+
+    ```bash
+        php artisan key:generate
+
+7. Run database migrations to create the necessary tables:
+
+    ```bash
+        php artisan migrate
+
+8. Start the development server:
+
+    ```bash
+        php artisan serve
+
+**The API is now available at 'http://localhost:8000/api/v1'
+
 
